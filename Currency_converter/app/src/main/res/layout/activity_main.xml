@@ -63,6 +63,5 @@
         android:text="Settings"
         android:layout_marginTop="40dp"
         android:textColor="#2196F3"
-
         style="@style/Widget.AppCompat.Button.Borderless"/>
 </LinearLayout>
