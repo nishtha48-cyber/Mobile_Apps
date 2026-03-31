@@ -47,6 +47,8 @@
                 android:inputType="numberDecimal"
                 android:background="@drawable/edit_text_bg"
                 android:padding="16dp"
+                android:textColor="@color/input_text_color"
+                android:textColorHint="#9E9E9E"
                 android:textSize="18sp" />
 
             <TextView
@@ -63,7 +65,10 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="5dp"
                 android:entries="@array/currencies"
-                android:background="@drawable/edit_text_bg" />
+                android:background="@drawable/edit_text_bg"
+                android:textColor="?android:attr/textColorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.DayNight" />
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,7 +84,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:entries="@array/currencies"
-                android:background="@drawable/edit_text_bg" />
+                android:background="@drawable/edit_text_bg"
+                android:textColor="?android:attr/textColorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.DayNight" />
+
 
             <Button
                 android:id="@+id/btnConvert"
