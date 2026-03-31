@@ -1,4 +1,4 @@
-package com.example.currencyconverter;
+package com.example.currency_converter;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

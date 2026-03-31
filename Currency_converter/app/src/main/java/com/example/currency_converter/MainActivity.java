@@ -1,4 +1,4 @@
-package com.example.currencyconverter;
+package com.example.currency_converter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Load theme before super.onCreate
         SharedPreferences pref = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean isDark = pref.getBoolean("darkTheme", false);
         AppCompatDelegate.setDefaultNightMode(isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
