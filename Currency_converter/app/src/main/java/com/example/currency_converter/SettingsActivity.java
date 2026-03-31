@@ -2,6 +2,7 @@ package com.example.currency_converter;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -13,6 +14,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         Switch switchTheme = findViewById(R.id.switchTheme);
+        Button btnBack = findViewById(R.id.btnBack);
         SharedPreferences pref = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean isDark = pref.getBoolean("darkTheme", false);
         switchTheme.setChecked(isDark);
@@ -24,6 +26,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             AppCompatDelegate.setDefaultNightMode(isChecked ?
                     AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+        });
+        btnBack.setOnClickListener(v -> {
+            finish();
         });
     }
 }

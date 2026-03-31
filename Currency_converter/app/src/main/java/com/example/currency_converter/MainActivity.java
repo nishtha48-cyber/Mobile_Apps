@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("prefs", MODE_PRIVATE);
         boolean isDark = pref.getBoolean("darkTheme", false);
         AppCompatDelegate.setDefaultNightMode(isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -31,9 +30,7 @@ public class MainActivity extends AppCompatActivity {
         btnConvert = findViewById(R.id.btnConvert);
         btnSettings = findViewById(R.id.btnSettings);
         tvResult = findViewById(R.id.tvResult);
-
         btnConvert.setOnClickListener(v -> convertCurrency());
-
         btnSettings.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         });
@@ -42,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private void convertCurrency() {
         String input = etAmount.getText().toString();
         if (input.isEmpty()) return;
-
         double amount = Double.parseDouble(input);
         String from = spinnerFrom.getSelectedItem().toString();
         String to = spinnerTo.getSelectedItem().toString();
@@ -53,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
             if (codes[i].equals(from)) fromIdx = i;
             if (codes[i].equals(to)) toIdx = i;
         }
-
         double result = (amount / rates[fromIdx]) * rates[toIdx];
         tvResult.setText(String.format("Result: %.2f %s", result, to));
     }

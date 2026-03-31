@@ -18,4 +18,12 @@
         android:text="Enable Dark Mode"
         android:textSize="18sp"
         android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back to Converter"
+        android:layout_marginTop="20dp"
+        style="@style/Widget.AppCompat.Button.Colored"/>
 </LinearLayout>
