@@ -48,7 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             isVideoActive = true;
-            if (mediaPlayer != null) mediaPlayer.stop();
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+
             android.widget.MediaController mediaController = new android.widget.MediaController(this);
             mediaController.setAnchorView(videoView);
             videoView.setMediaController(mediaController);
