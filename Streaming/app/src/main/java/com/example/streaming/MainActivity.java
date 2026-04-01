@@ -1,24 +1,95 @@
 package com.example.streaming;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.VideoView;
+import android.widget.Toast;
+import android.media.MediaPlayer;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+
+    VideoView videoView;
+    EditText etUrl;
+    MediaPlayer mediaPlayer;
+    Uri audioUri, videoUri;
+    boolean isVideoActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        videoView = findViewById(R.id.videoView);
+        etUrl = findViewById(R.id.etUrl);
+
+        findViewById(R.id.btnOpenFile).setOnClickListener(v -> openFilePicker());
+        findViewById(R.id.btnOpenUrl).setOnClickListener(v -> streamVideo());
+        findViewById(R.id.btnPlay).setOnClickListener(v -> playMedia());
+        findViewById(R.id.btnPause).setOnClickListener(v -> pauseMedia());
+        findViewById(R.id.btnStop).setOnClickListener(v -> stopMedia());
+        findViewById(R.id.btnRestart).setOnClickListener(v -> restartMedia());
+    }
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("audio/*");
+        startActivityForResult(intent, 101);
+    }
+
+    private void streamVideo() {
+        String url = etUrl.getText().toString();
+        if (url.isEmpty()) {
+            Toast.makeText(this, "Please enter URL", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        isVideoActive = true;
+        if (mediaPlayer != null) mediaPlayer.stop();
+
+        videoUri = Uri.parse(url);
+        videoView.setVideoURI(videoUri);
+        videoView.start();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
+            audioUri = data.getData();
+            isVideoActive = false;
+            videoView.stopPlayback();
+
+            if (mediaPlayer != null) mediaPlayer.release();
+            mediaPlayer = MediaPlayer.create(this, audioUri);
+            Toast.makeText(this, "Audio File Loaded", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void playMedia() {
+        if (isVideoActive) videoView.start();
+        else if (mediaPlayer != null) mediaPlayer.start();
+    }
+
+    private void pauseMedia() {
+        if (isVideoActive) videoView.pause();
+        else if (mediaPlayer != null) mediaPlayer.pause();
+    }
+    private void stopMedia() {
+        if (isVideoActive) videoView.stopPlayback();
+        else if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer = MediaPlayer.create(this, audioUri); // Reset to allow play again
+        }
+    }
+    private void restartMedia() {
+        if (isVideoActive) {
+            videoView.resume();
+            videoView.start();
+        } else if (mediaPlayer != null) {
+            mediaPlayer.seekTo(0);
+            mediaPlayer.start();
+        }
     }
 }
