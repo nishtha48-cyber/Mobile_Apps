@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-
     VideoView videoView;
     EditText etUrl;
     MediaPlayer mediaPlayer;
@@ -23,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         videoView = findViewById(R.id.videoView);
+        videoView.setZOrderOnTop(true);
         etUrl = findViewById(R.id.etUrl);
 
         findViewById(R.id.btnOpenFile).setOnClickListener(v -> openFilePicker());
@@ -41,19 +40,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void streamVideo() {
-        String url = etUrl.getText().toString();
+        String url = etUrl.getText().toString().trim();
         if (url.isEmpty()) {
             Toast.makeText(this, "Please enter URL", Toast.LENGTH_SHORT).show();
             return;
         }
-        isVideoActive = true;
-        if (mediaPlayer != null) mediaPlayer.stop();
 
-        videoUri = Uri.parse(url);
-        videoView.setVideoURI(videoUri);
-        videoView.start();
+        try {
+            isVideoActive = true;
+            if (mediaPlayer != null) mediaPlayer.stop();
+            android.widget.MediaController mediaController = new android.widget.MediaController(this);
+            mediaController.setAnchorView(videoView);
+            videoView.setMediaController(mediaController);
+
+            videoUri = Uri.parse(url);
+            videoView.setVideoURI(videoUri);
+            videoView.setOnPreparedListener(mp -> {
+                Toast.makeText(MainActivity.this, "Streaming Started", Toast.LENGTH_SHORT).show();
+                videoView.start();
+            });
+
+            videoView.setOnErrorListener((mp, what, extra) -> {
+                Toast.makeText(MainActivity.this, "Error: Check URL or Internet", Toast.LENGTH_SHORT).show();
+                return true;
+            });
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
