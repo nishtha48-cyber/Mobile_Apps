@@ -18,59 +18,53 @@ import java.util.List;
 
 public class GalleryActivity extends AppCompatActivity {
     RecyclerView recyclerView;
+    private List<File> imageList = new ArrayList<>();
     List<File> imageFiles = new ArrayList<>();
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
         setContentView(R.layout.activity_gallery);
 
         recyclerView = findViewById(R.id.recyclerView);
-
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-
         File folder = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (folder != null && folder.exists()) {
             File[] files = folder.listFiles();
             if (files != null) {
-                imageFiles = Arrays.asList(files);
+                imageList = Arrays.asList(files);
             }
         }
-        ImageAdapter adapter = new ImageAdapter(imageFiles);
-        recyclerView.setAdapter(adapter);
+
+        recyclerView.setAdapter(new RecyclerView.Adapter<ViewHolder>() {
+            @NonNull
+            @Override
+            public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false);
+                return new ViewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+                File file = imageList.get(position);
+                holder.img.setImageURI(android.net.Uri.fromFile(file));
+                holder.itemView.setOnClickListener(v -> {
+                    Intent intent = new Intent(GalleryActivity.this, DetailActivity.class);
+                    intent.putExtra("path", file.getAbsolutePath());
+                    startActivity(intent);
+                });
+            }
+
+            @Override
+            public int getItemCount() { return imageList.size(); }
+        });
     }
 
-    class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
-        List<File> files;
-        ImageAdapter(List<File> files) { this.files = files; }
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            File currentFile = files.get(position);
-            holder.imageView.setImageURI(android.net.Uri.fromFile(currentFile));
-            holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(GalleryActivity.this, DetailActivity.class);
-                intent.putExtra("imagePath", currentFile.getAbsolutePath());
-                startActivity(intent);
-            });
-        }
-
-        @Override
-        public int getItemCount() { return files.size(); }
-        class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView imageView;
-            ViewHolder(View itemView) {
-                super(itemView);
-                imageView = itemView.findViewById(R.id.ivGalleryItem);
-            }
-        }
+    class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView img;
+        ViewHolder(View v) { super(v); img = v.findViewById(R.id.ivGalleryItem); }
     }
 }
+
 
 
 

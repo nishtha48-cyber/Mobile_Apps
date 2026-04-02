@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.material.button.MaterialButton;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -18,10 +19,11 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
         ImageView ivFullImage = findViewById(R.id.ivFullImage);
         TextView tvDetails = findViewById(R.id.tvDetails);
-
-        String path = getIntent().getStringExtra("imagePath");
+        MaterialButton btnDelete = findViewById(R.id.btnDelete);
+        String path = getIntent().getStringExtra("path");
         if (path != null) {
             currentFile = new File(path);
             ivFullImage.setImageURI(Uri.fromFile(currentFile));
@@ -29,30 +31,33 @@ public class DetailActivity extends AppCompatActivity {
             String location = "\nPath: " + currentFile.getAbsolutePath();
             String size = "\nSize: " + (currentFile.length() / 1024) + " KB";
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-            String date = "\nDate: " + sdf.format(new Date(currentFile.lastModified()));
+            String date = "\nDate Taken: " + sdf.format(new Date(currentFile.lastModified()));
+
             tvDetails.setText(name + location + size + date);
         }
 
-        findViewById(R.id.btnDelete).setOnClickListener(v -> {
-            showConfirmDialog();
+        btnDelete.setOnClickListener(v -> {
+            confirmDelete();
         });
     }
 
-    private void showConfirmDialog() {
+    private void confirmDelete() {
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Deletion")
+                .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want to delete this image permanently?")
-                .setPositiveButton("Yes, Delete", (dialog, which) -> {
-                    if (currentFile.delete()) {
-                        Toast.makeText(this, "Image Deleted", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Error deleting file", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    if (currentFile != null && currentFile.exists()) {
+                        if (currentFile.delete()) {
+                            Toast.makeText(this, "Image Deleted Successfully", Toast.LENGTH_SHORT).show();
+                            finish(); // Returns the user to the Image Gallery view
+                        } else {
+                            Toast.makeText(this, "Error: Could not delete file", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                 .show();
     }
-    }
+}
 
 
