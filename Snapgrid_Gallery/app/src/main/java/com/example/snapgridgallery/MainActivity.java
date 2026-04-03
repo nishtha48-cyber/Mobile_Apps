@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.DocumentsContract;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,71 +13,73 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
 import java.io.OutputStream;
 
+
 public class MainActivity extends AppCompatActivity {
-    private static final int REQUEST_PICK_FOLDER = 200;
-    private static final int REQUEST_IMAGE_CAPTURE = 101;
-    private Uri selectedFolderUri;
+    private static final int REQ_SAVE_FOLDER = 200;
+    private static final int REQ_VIEW_FOLDER = 300;
+    private static final int REQ_CAPTURE = 101;
+
+    private Uri saveFolderUri;
     private TextView tvFolderPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         tvFolderPath = findViewById(R.id.tvFolderPath);
-        Button btnPickFolder = findViewById(R.id.btnPickFolder);
+        Button btnPickSave = findViewById(R.id.btnPickFolder);
         Button btnCapture = findViewById(R.id.btnCapture);
-        Button btnGallery = findViewById(R.id.btnGallery);
-        btnPickFolder.setOnClickListener(v -> {
+        Button btnViewPhotos = findViewById(R.id.btnGallery);
+
+        btnPickSave.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            startActivityForResult(intent, REQUEST_PICK_FOLDER);
+            startActivityForResult(intent, REQ_SAVE_FOLDER);
         });
 
         btnCapture.setOnClickListener(v -> {
-            if (selectedFolderUri != null) {
+            if (saveFolderUri != null) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                startActivityForResult(intent, REQ_CAPTURE);
             } else {
-                Toast.makeText(this, "Please choose a folder first!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Choose a SAVE folder first!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        btnGallery.setOnClickListener(v -> {
-            if (selectedFolderUri != null) {
-                Intent intent = new Intent(this, GalleryActivity.class);
-                intent.putExtra("folderUri", selectedFolderUri.toString());
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Choose a folder first!", Toast.LENGTH_SHORT).show();
-            }
+        btnViewPhotos.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            startActivityForResult(intent, REQ_VIEW_FOLDER);
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) return;
 
-        if (requestCode == REQUEST_PICK_FOLDER && resultCode == Activity.RESULT_OK) {
-            selectedFolderUri = data.getData();
-            getContentResolver().takePersistableUriPermission(selectedFolderUri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            tvFolderPath.setText("Selected Folder: " + selectedFolderUri.getPath());
-        }
-
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            android.graphics.Bitmap imageBitmap = (android.graphics.Bitmap) extras.get("data");
-            saveImageToFolder(imageBitmap);
+        if (requestCode == REQ_SAVE_FOLDER) {
+            saveFolderUri = data.getData();
+            getContentResolver().takePersistableUriPermission(saveFolderUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            tvFolderPath.setText("Save Location: " + saveFolderUri.getPath());
+        } else if (requestCode == REQ_VIEW_FOLDER) {
+            Uri viewFolderUri = data.getData();
+            Intent intent = new Intent(this, GalleryActivity.class);
+            intent.putExtra("folderUri", viewFolderUri.toString());
+            startActivity(intent);
+        } else if (requestCode == REQ_CAPTURE) {
+            Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+            saveImage(imageBitmap);
         }
     }
 
-    private void saveImageToFolder(android.graphics.Bitmap bitmap) {
+    private void saveImage(Bitmap bitmap) {
         try {
-            DocumentFile pickedDir = DocumentFile.fromTreeUri(this, selectedFolderUri);
-            DocumentFile newFile = pickedDir.createFile("image/jpeg", "IMG_" + System.currentTimeMillis() + ".jpg");
+            DocumentFile pickedDir = DocumentFile.fromTreeUri(this, saveFolderUri);
+            DocumentFile newFile = pickedDir.createFile("image/jpeg", "IMG_" + System.currentTimeMillis());
             OutputStream out = getContentResolver().openOutputStream(newFile.getUri());
-            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 100, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
-            Toast.makeText(this, "Photo Saved to Chosen Folder!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -17,32 +17,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GalleryActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
+
     List<DocumentFile> imageList = new ArrayList<>();
+    private String uriString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        uriString = getIntent().getStringExtra("folderUri");
 
-        Button btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+    }
 
-        String uriString = getIntent().getStringExtra("folderUri");
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadImagesFromFolder();
+    }
+
+    private void loadImagesFromFolder() {
         if (uriString != null) {
+            imageList.clear();
             Uri folderUri = Uri.parse(uriString);
             DocumentFile pickedDir = DocumentFile.fromTreeUri(this, folderUri);
-            for (DocumentFile file : pickedDir.listFiles()) {
-                if (file.getType() != null && file.getType().startsWith("image/")) {
-                    imageList.add(file);
+
+            if (pickedDir != null && pickedDir.isDirectory()) {
+                for (DocumentFile file : pickedDir.listFiles()) {
+                    if (file.exists() && file.getType() != null && file.getType().startsWith("image/")) {
+                        imageList.add(file);
+                    }
                 }
             }
+
             recyclerView.setAdapter(new GalleryAdapter());
         }
     }
-    private class GalleryAdapter extends RecyclerView.Adapter<ViewHolder> {
+
+    private class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -54,6 +70,7 @@ public class GalleryActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             DocumentFile file = imageList.get(position);
             holder.img.setImageURI(file.getUri());
+
             holder.itemView.setOnClickListener(v -> {
                 Intent i = new Intent(GalleryActivity.this, DetailActivity.class);
                 i.putExtra("fileUri", file.getUri().toString());
@@ -61,14 +78,23 @@ public class GalleryActivity extends AppCompatActivity {
             });
         }
 
+
         @Override
-        public int getItemCount() { return imageList.size(); }
-    }
+        public int getItemCount() {
+            return imageList.size();
+        }
+
+
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView img;
-        ViewHolder(View v) { super(v); img = v.findViewById(R.id.ivGalleryItem); }
+        ViewHolder(View v) {
+            super(v);
+            img = v.findViewById(R.id.ivGalleryItem);
+        }
     }
 }
+}
+
 
 
 
