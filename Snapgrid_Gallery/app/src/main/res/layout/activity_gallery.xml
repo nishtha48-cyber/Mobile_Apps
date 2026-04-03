@@ -6,6 +6,13 @@
     android:orientation="vertical"
     android:background="#FFFFFF">
 
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Back to Camera" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,5 +31,4 @@
         android:padding="4dp"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
-
 </LinearLayout>
