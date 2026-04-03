@@ -26,10 +26,18 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
+
         uriString = getIntent().getStringExtra("folderUri");
 
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        findViewById(R.id.btnBack).setOnClickListener(v -> {
+            finish();
+        });
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
     }
@@ -39,6 +47,7 @@ public class GalleryActivity extends AppCompatActivity {
         super.onResume();
         loadImagesFromFolder();
     }
+
 
     private void loadImagesFromFolder() {
         if (uriString != null) {

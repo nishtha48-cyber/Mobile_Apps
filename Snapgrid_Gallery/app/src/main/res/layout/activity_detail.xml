@@ -6,10 +6,19 @@
     android:background="#F5F5F5">
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
+        <Button
+            android:id="@+id/btnBackToGallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Back to Gallery"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textColor="#2196F3"
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"

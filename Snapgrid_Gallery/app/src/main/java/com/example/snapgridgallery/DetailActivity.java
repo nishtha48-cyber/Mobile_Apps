@@ -3,6 +3,7 @@ package com.example.snapgridgallery;
 import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,14 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        Button btnBack = findViewById(R.id.btnBackToGallery);
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
+
+        findViewById(R.id.btnBackToGallery).setOnClickListener(v -> {
+            finish();
+        });
 
         ImageView ivFull = findViewById(R.id.ivFullImage);
         TextView tvDetails = findViewById(R.id.tvDetails);
