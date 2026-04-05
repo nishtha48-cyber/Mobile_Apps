@@ -1,6 +1,6 @@
 ## 🛠 Tech Stack & Tools
 *   **Language:** Java (JDK 11+)
-*   **UI Framework:** XML (Material Design 3 Components)
+*   **UI Framework:** XML 
 *   **Build System:** Gradle (Groovy/Kotlin DSL)
 *   **Minimum SDK:** API 23 (Android 7.0)
 *   **Target SDK:** API 34 (Android 14.0)
