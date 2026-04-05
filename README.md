@@ -1,109 +1,62 @@
-This repository contains a collection of four Android applications developed as part of a college project. These apps demonstrate proficiency in UI/UX design, hardware interaction, multimedia streaming, and modern file system management using Java and XML.
+## 🛠 Tech Stack & Tools
+*   **Language:** Java (JDK 11+)
+*   **UI Framework:** XML (Material Design 3 Components)
+*   **Build System:** Gradle (Groovy/Kotlin DSL)
+*   **Minimum SDK:** API 23 (Android 7.0)
+*   **Target SDK:** API 34 (Android 14.0)
 
-📱 Project Overview
-1. Currency Converter (with Theme Persistence)
+---
 
-A high-precision converter for four major currencies (INR, USD, JPY, EUR).
+## 🚀 Applications Overview
 
-Key Features: Real-time calculation, custom dropdown selection, and a dedicated Settings page.
+### 1️⃣ Currency Converter (Theme Persistence)
+A high-precision conversion utility for **INR, USD, JPY, and EUR**.
+*   **Key Feature:** Implements a dedicated Settings page to toggle between **Light and Dark themes**.
+*   **Logic:** Uses `SharedPreferences` to persist the theme state. The conversion logic uses a base-currency mathematical model to ensure O(1) calculation efficiency.
 
-Technical Logic:
+### 2️⃣ Advanced Media Player (Streaming & Local)
+A dual-mode player for both disk-based audio and network-based video.
+*   **Key Feature:** Streams direct MP4 video from a URL and opens `.mp3` files from the device disk.
+*   **Logic:** Utilizes `VideoView` with `ZOrder` management and `MediaPlayer` with lifecycle-aware `release()` calls to prevent memory leaks and hardware resource conflicts.
 
-Theme Management: Utilizes SharedPreferences and AppCompatDelegate to persist user theme choices (Light/Dark mode) across app restarts.
+### 3️⃣ Real-Time Sensor Data (Hardware Interaction)
+A live monitoring tool for physical device sensors.
+*   **Key Feature:** Tracks **Accelerometer**, **Light**, and **Proximity** sensors simultaneously.
+*   **Logic:** Implements the `SensorEventListener` interface. Logically manages battery consumption by registering listeners in `onResume()` and unregistering in `onPause()`.
 
-Mathematical Model: Implements a USD-base conversion logic to ensure modularity when adding new currencies.
+### 4️⃣ SnapGrid Gallery (Scoped Storage & Media CRUD)
+*7-Mark Advanced Project:* A full-stack photo management system.
+*   **Key Features:** 
+    *   **Capture:** Uses `MediaStore` and `FileProvider` to take full-res photos.
+    *   **SAF (Storage Access Framework):** Allows users to **choose any folder** on the device to save or view photos.
+    *   **Grid UI:** Features a `RecyclerView` with `GridLayoutManager` for a gallery-style view.
+    *   **Metadata:** Extracts image name, path, size (KB), and date taken using the `DocumentFile` API.
+    *   **Secure Deletion:** Implements a `Confirmation AlertDialog` before permanent file deletion.
 
-UI/UX: Uses CardView and Material Design attributes for a clean, floating-element interface.
+---
 
-2. Media Player (Hybrid Playback & Streaming)
+## 📐 Logical Implementation Details
 
-A versatile media tool capable of handling both local disk files and network-based streams.
+### ✅ Scoped Storage & Security
+For the **SnapGrid** app, I avoided hardcoded paths. I logically implemented `Intent.ACTION_OPEN_DOCUMENT_TREE` to let the user select a folder. This satisfies modern Android security requirements and ensures the app only accesses user-approved directories.
 
-Key Features: Open local audio files, stream MP4 video from URLs, and full playback controls (Play, Pause, Stop, Restart).
+### ✅ Activity Back-Stack Management
+Navigating between the Camera, Gallery, and Details pages is handled via `finish()` and `startActivity()`. This ensures a logical "Up Navigation" flow where the user can always return to the previous state without creating redundant activity instances.
 
-Technical Logic:
+### ✅ Modern Material UI
+All apps utilize `CardView` for visual elevation and `MaterialButton` for a consistent, professional design. Every input field is styled with custom XML drawables to ensure readability in both Light and Dark modes.
 
-Hardware Decoders: Uses MediaPlayer for audio and VideoView for video to optimize system resource usage.
+---
 
-Intent System: Implements ACTION_OPEN_DOCUMENT to securely browse device storage without compromising system security.
+## 🔧 How to Run
+1.  **Clone the Repo:** `git clone https://github.com/nishtha48-cyber/Mobile_Apps.git`
+2.  **Open in Android Studio:** Open the project and wait for Gradle sync.
+3.  **Permissions:** Grant **Camera** and **Internet** permissions when prompted.
+4. **Build and run the application on:**  Android Emulator or physical Android device
+---
 
-Network Security: Configured with usesCleartextTraffic and OnPreparedListener to handle asynchronous network buffering.
+## 👨‍💻 Author
 
-3. Sensors (Hardware Interaction)
+Nishtha gupta
 
-An app that monitors and displays live data from the device's physical hardware sensors.
 
-Key Features: Real-time tracking of Accelerometer (Motion), Light (Illuminance), and Proximity (Distance).
-
-Technical Logic:
-
-Sensor Framework: Utilizes SensorManager and SensorEventListener to create a low-latency data stream.
-
-Battery Optimization: Logically registers listeners in onResume() and unregisters them in onPause() to prevent background battery drain.
-
-Data Formatting: Real-time XYZ coordinate mapping and scalar unit conversion (Lux/cm).
-
-4. SnapGrid Gallery (Scoped Storage & Media Management)
-
-A comprehensive photo management system that integrates camera hardware with the Android File System.
-
-Key Features: Capture full-res photos, custom folder selection (SAF), grid-based gallery, image metadata viewing, and secure deletion.
-
-Technical Logic:
-
-Scoped Storage (SAF): Implements Intent.ACTION_OPEN_DOCUMENT_TREE and DocumentFile API to comply with modern Android security, allowing users to choose specific folders.
-
-FileProvider: Uses content:// URIs instead of raw file paths to safely share captured media with the system camera.
-
-Adapter Pattern: Features a RecyclerView with GridLayoutManager for memory-efficient image rendering.
-
-CRUD Operations: Implements file deletion with a Confirmation AlertDialog and extracts metadata (size, date, path) via the Document Provider.
-
-🛠 Technical Stack
-
-Language: Java (JDK 11+)
-
-Layout: XML (Material Design 3 Components)
-
-Build System: Gradle (Kotlin DSL/Groovy)
-
-Minimum SDK: API 23 (Android 7.0 Nougat)
-
-Target SDK: API 34 (Android 14.0 Upside Down Cake)
-
-🚀 Installation & Setup
-
-Clone the Repository:
-
-code
-Bash
-download
-content_copy
-expand_less
-git clone https://github.com/yourusername/snapgrid-portfolio.git
-
-Open in Android Studio:
-
-File > Open > Select Project Folder.
-
-Sync Gradle:
-
-Ensure all dependencies (CardView, Material Components, DocumentFile) are downloaded.
-
-Run on Emulator/Physical Device:
-
-Note for SnapGrid: Grant Camera and Storage permissions when prompted on the first run.
-
-Note for Media Player: Use a direct MP4 link (e.g., https://www.w3schools.com/html/mov_bbb.mp4) for testing the stream.
-
-📐 Logical Design Principles
-
-Throughout this portfolio, I have followed standard Android development best practices:
-
-Activity Lifecycle: Ensuring state preservation and resource cleanup during screen transitions.
-
-Visual Hierarchy: Using elevation, contrast, and spacing to guide user interaction.
-
-Input Validation: Handling null file paths, empty URL strings, and invalid numeric inputs to prevent app crashes.
-
-Navigation Stack: Properly managing the Activity Back-Stack using finish() to provide a seamless "Up" navigation experience.
