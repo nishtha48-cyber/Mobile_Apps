@@ -25,7 +25,6 @@ A live monitoring tool for physical device sensors.
 *   **Logic:** Implements the `SensorEventListener` interface. Logically manages battery consumption by registering listeners in `onResume()` and unregistering in `onPause()`.
 
 ### 4️⃣ SnapGrid Gallery (Scoped Storage & Media CRUD)
-*7-Mark Advanced Project:* A full-stack photo management system.
 *   **Key Features:** 
     *   **Capture:** Uses `MediaStore` and `FileProvider` to take full-res photos.
     *   **SAF (Storage Access Framework):** Allows users to **choose any folder** on the device to save or view photos.
