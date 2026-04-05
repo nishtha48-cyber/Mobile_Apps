@@ -16,7 +16,7 @@ A high-precision conversion utility for **INR, USD, JPY, and EUR**.
 
 ### 2️⃣ Advanced Media Player (Streaming & Local)
 A dual-mode player for both disk-based audio and network-based video.
-*   **Key Feature:** Streams direct MP4 video from a URL and opens `.mp3` files from the device disk.
+*   **Key Feature:** Streams direct MP4 video and MP3 audio from a URL.
 *   **Logic:** Utilizes `VideoView` with `ZOrder` management and `MediaPlayer` with lifecycle-aware `release()` calls to prevent memory leaks and hardware resource conflicts.
 
 ### 3️⃣ Real-Time Sensor Data (Hardware Interaction)
