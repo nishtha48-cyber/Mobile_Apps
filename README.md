@@ -48,7 +48,7 @@ All apps utilize `CardView` for visual elevation and `MaterialButton` for a cons
 ---
 
 ## 🔧 How to Run
-1.  **Clone the Repo:** ```bash
+1.  **Clone the Repo:** 
 git clone https://github.com/nishtha48-cyber/Mobile_Apps
 2.  **Open in Android Studio:** Open the project and wait for Gradle sync.
 3.  **Permissions:** Grant **Camera** and **Internet** permissions when prompted.
